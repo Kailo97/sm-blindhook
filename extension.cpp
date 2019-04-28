@@ -47,6 +47,8 @@ void *g_addr_continue;
 void *g_addr_skip;
 IForward *g_pBlindForward = NULL;
 
+// Extension is linux only
+
 bool __stdcall BlindHookHandler(CBaseEntity *pEntity, CBaseEntity *pevInflictor, CBaseEntity *pevAttacker)
 {
 	cell_t result = Pl_Continue;
@@ -61,46 +63,41 @@ bool __stdcall BlindHookHandler(CBaseEntity *pEntity, CBaseEntity *pevInflictor,
 
 __declspec(naked) void blindhook()
 {
-#if defined(WIN32)
-	__asm push [esp+0x14]		// pevAttacker
-	__asm push [esp+0x4+0x18]	// pevInflictor
-	__asm push esi				// pEntity
-#else
-	__asm push [ebp+0x18]		// pevAttacker
-	__asm push [ebp+0x14]		// pevInflictor
-	__asm push ebx				// pEntity
-#endif
+	// prologue
+	__asm sub esp, 12
+	__asm fstp dword ptr [esp+0x00]		// st save
+	__asm fstp dword ptr [esp+0x04]		// st save
+	__asm mov [esp+0x08], edx			// edx save
+
+	__asm push ebp						// pevAttacker
+	__asm push esi						// pevInflictor
+	__asm push ebx						// pEntity
 	__asm call BlindHookHandler;
+
+	// epilogue
+	__asm mov edx, [esp+0x08]
+	__asm fld dword ptr [esp+0x04]
+	__asm fld dword ptr [esp+0x00]
+	__asm add esp, 12
 
 	__asm test al, al;
 	__asm jz Trampoline
+
 	// skip
-	__asm mov ecx, g_addr_skip
-	__asm jmp ecx
+	__asm mov eax, g_addr_skip
+	__asm jmp eax
 
 	// Trampoline back
 	__asm Trampoline:
-#if defined(WIN32)
 	__asm _emit 0x8B
-	__asm _emit 0x06
-	__asm _emit 0x8D
-	__asm _emit 0x8C
+	__asm _emit 0x0B
+	__asm _emit 0x89
+	__asm _emit 0x54
 	__asm _emit 0x24
-	__asm _emit 0xB0
-	__asm _emit 0x00
-	__asm _emit 0x00
-	__asm _emit 0x00
-	__asm _emit 0x51
-#else
-	__asm _emit 0x8B
-	__asm _emit 0x03
-	__asm _emit 0x8D
-	__asm _emit 0x55
-	__asm _emit 0xD0
-#endif
+	__asm _emit 0x0C
 
-	__asm mov ecx, g_addr_continue
-	__asm jmp ecx
+	__asm mov eax, g_addr_continue
+	__asm jmp eax
 }
 
 bool BlindHook::SDK_OnLoad(char *error, size_t maxlength, bool late)
@@ -119,15 +116,9 @@ bool BlindHook::SDK_OnLoad(char *error, size_t maxlength, bool late)
 
 	void *addr_hook;
 
-#if defined(WIN32)
-	addr_hook = (void*)((uintptr_t)addr + 0x1DD);
-	g_addr_continue = (void*)((uintptr_t)addr + 0x1E7);
-	g_addr_skip = (void*)((uintptr_t)addr + 0x6F5);
-#else
-	addr_hook = (void*)((uintptr_t)addr + 0xD6);
-	g_addr_continue = (void*)((uintptr_t)addr + 0xDB);
-	g_addr_skip = (void*)((uintptr_t)addr + 0x60);
-#endif
+	addr_hook = (void*)((uintptr_t)addr + 0x583);
+	g_addr_continue = (void*)((uintptr_t)addr + 0x589);
+	g_addr_skip = (void*)((uintptr_t)addr + 0x3D0);
 
 	sharesys->RegisterLibrary(myself, "blindhook");
 	plsys->AddPluginsListener(this);
