@@ -62,8 +62,8 @@ bool __stdcall BlindHookHandler(CBaseEntity *pEntity, CBaseEntity *pevInflictor,
 __declspec(naked) void blindhook()
 {
 #if defined(WIN32)
-	__asm push [esp+0x14]		// pevAttacker
-	__asm push [esp+0x4+0x18]	// pevInflictor
+	__asm push [esp+0x10]		// pevAttacker
+	__asm push [esp+0x4+0x14]	// pevInflictor
 	__asm push esi				// pEntity
 #else
 	__asm push [ebp+0x18]		// pevAttacker
@@ -122,7 +122,7 @@ bool BlindHook::SDK_OnLoad(char *error, size_t maxlength, bool late)
 #if defined(WIN32)
 	addr_hook = (void*)((uintptr_t)addr + 0x1DD);
 	g_addr_continue = (void*)((uintptr_t)addr + 0x1E7);
-	g_addr_skip = (void*)((uintptr_t)addr + 0x6F5);
+	g_addr_skip = (void*)((uintptr_t)addr + 0x6E3);
 #else
 	addr_hook = (void*)((uintptr_t)addr + 0xD6);
 	g_addr_continue = (void*)((uintptr_t)addr + 0xDB);
