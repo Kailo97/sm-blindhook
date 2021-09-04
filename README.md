@@ -1,6 +1,6 @@
 # SourceMod Blind Hook Extension
 Extension adds forward for flashbang's blind control.  
-Only for Counter-Strike: Source v34.
+Only for Counter-Strike: Source OB.
 ### Forward
 ```
 /**
