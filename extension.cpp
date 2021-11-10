@@ -126,7 +126,7 @@ bool BlindHook::SDK_OnLoad(char *error, size_t maxlength, bool late)
 #else
 	addr_hook = (void*)((uintptr_t)addr + 0x126);
 	g_addr_continue = (void*)((uintptr_t)addr + 0x12B);
-	g_addr_skip = (void*)((uintptr_t)addr + 0xB0);
+	g_addr_skip = (void*)((uintptr_t)addr + 0xA8);
 #endif
 
 	sharesys->RegisterLibrary(myself, "blindhook");
