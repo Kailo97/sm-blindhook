@@ -7,7 +7,7 @@
 			"RadiusFlash"
 			{
 				"library"	"server"
-				"linux"		"\x55\xD9\xE8\x57\x56\x53\x81\xEC\xAC\x01\x00\x00"
+				"linux"		"@_Z11RadiusFlash6VectorP11CBaseEntityS1_fii"
 			}
 		}
 	}
