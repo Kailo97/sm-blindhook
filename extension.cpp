@@ -66,11 +66,15 @@ __declspec(naked) void blindhook()
 	__asm push [esp+0x4+0x14]	// pevInflictor
 	__asm push esi				// pEntity
 #else
+	__asm sub esp, 4			// Align to 16
 	__asm push [ebp+0x18]		// pevAttacker
 	__asm push [ebp+0x14]		// pevInflictor
 	__asm push ebx				// pEntity
 #endif
 	__asm call BlindHookHandler;
+#if !defined(WIN32)
+	__asm add esp, 4
+#endif
 
 	__asm test al, al;
 	__asm jz Trampoline
