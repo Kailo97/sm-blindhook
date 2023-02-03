@@ -37,7 +37,7 @@
 /* Basic information exposed publicly */
 #define SMEXT_CONF_NAME			"Blind Hook"
 #define SMEXT_CONF_DESCRIPTION	"Adds SourcePawn hook for flashbang's blind action."
-#define SMEXT_CONF_VERSION		"1.4"
+#define SMEXT_CONF_VERSION		"1.5"
 #define SMEXT_CONF_AUTHOR		"Kailo"
 #define SMEXT_CONF_URL			"https://github.com/Kailo97"
 #define SMEXT_CONF_LOGTAG		"Blind Hook"

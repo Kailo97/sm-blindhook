@@ -99,8 +99,11 @@ __declspec(naked) void blindhook()
 	__asm _emit 0x8B
 	__asm _emit 0x03
 	__asm _emit 0x8D
-	__asm _emit 0x55
-	__asm _emit 0xCC
+	__asm _emit 0x95
+	__asm _emit 0xF8
+	__asm _emit 0xFE
+	__asm _emit 0xFF
+	__asm _emit 0xFF
 #endif
 
 	__asm mov ecx, g_addr_continue
@@ -128,9 +131,9 @@ bool BlindHook::SDK_OnLoad(char *error, size_t maxlength, bool late)
 	g_addr_continue = (void*)((uintptr_t)addr + 0x205);
 	g_addr_skip = (void*)((uintptr_t)addr + 0x6D7);
 #else
-	addr_hook = (void*)((uintptr_t)addr + 0x126);
-	g_addr_continue = (void*)((uintptr_t)addr + 0x12B);
-	g_addr_skip = (void*)((uintptr_t)addr + 0xA8);
+	addr_hook = (void*)((uintptr_t)addr + 0x135);
+	g_addr_continue = (void*)((uintptr_t)addr + 0x13D);
+	g_addr_skip = (void*)((uintptr_t)addr + 0xB0);
 #endif
 
 	sharesys->RegisterLibrary(myself, "blindhook");
