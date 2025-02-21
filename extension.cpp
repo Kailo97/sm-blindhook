@@ -63,10 +63,12 @@ bool __stdcall BlindHookHandler(CBaseEntity *pEntity, CBaseEntity *pevInflictor,
 
 __declspec(naked) void blindhook()
 {
+	__asm sub esp, 4					// Align to 16
 	__asm push [ebp+0x18]				// pevAttacker
 	__asm push [ebp+0x14]				// pevInflictor
-	__asm push ebx						// pEntity
+	__asm push edi						// pEntity
 	__asm call BlindHookHandler;
+	__asm add esp, 4
 
 	__asm test al, al;
 	__asm jz Trampoline
@@ -78,10 +80,10 @@ __declspec(naked) void blindhook()
 	// Trampoline back
 	__asm Trampoline:
 	__asm _emit 0x8B
-	__asm _emit 0x03
+	__asm _emit 0x07
 	__asm _emit 0x8D
 	__asm _emit 0x4D
-	__asm _emit 0xD0
+	__asm _emit 0xC8
 
 	__asm mov edx, g_addr_continue
 	__asm jmp edx
@@ -103,9 +105,9 @@ bool BlindHook::SDK_OnLoad(char *error, size_t maxlength, bool late)
 
 	void *addr_hook;
 
-	addr_hook = (void*)((uintptr_t)addr + 0xCC);
-	g_addr_continue = (void*)((uintptr_t)addr + 0xD1);
-	g_addr_skip = (void*)((uintptr_t)addr + 0x68);
+	addr_hook = (void*)((uintptr_t)addr + 0xB4);
+	g_addr_continue = (void*)((uintptr_t)addr + 0xB9);
+	g_addr_skip = (void*)((uintptr_t)addr + 0x58);
 
 	sharesys->RegisterLibrary(myself, "blindhook");
 	plsys->AddPluginsListener(this);
